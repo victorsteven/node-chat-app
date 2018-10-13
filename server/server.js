@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
 
 //__dirname is the server folder
 
@@ -38,27 +39,15 @@ io.on('connection', (socket) => {
     //     console.log('createEmail: ', newEmail);
     // });
 
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the chat group',
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin', 'welcome to the chat app'));
 
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'A new user joined this group',
-        createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'Someone just joined the group'));
     
     //It is the client that create the "createMessage" that is listened here
     socket.on('createMessage', (message) => {
         // console.log('The message', newMsg);
         //io.emit: sends to everyone, including the creator
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
+        io.emit('newMessage', generateMessage(message.from, message.text));
         //this is send the massage message to every other socket but this one
         // socket.broadcast.emit('newMessage', {
         //         from: message.from,
