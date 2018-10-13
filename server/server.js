@@ -28,17 +28,23 @@ io.on('connection', (socket) => {
     //     createdAt: 123
     // });
 
-    socket.emit('newMessage', {
-        from: 'akin@gmail.com',
-        text: 'This is the message from someone',
-        createdAt: 235443
-    });
+    // socket.emit('newMessage', {
+    //     from: 'akin@gmail.com',
+    //     text: 'This is the message from someone',
+    //     createdAt: 235443
+    // });
 
     // socket.on('createEmail', (newEmail) => {
     //     console.log('createEmail: ', newEmail);
     // });
-    socket.on('createMessage', (newMsg) => {
-        console.log('The message', newMsg);
+    socket.on('createMessage', (message) => {
+        // console.log('The message', newMsg);
+        //io.emit: sends to everyone
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 
     socket.on('disconnect', () => {

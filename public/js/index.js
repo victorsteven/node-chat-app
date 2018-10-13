@@ -9,11 +9,10 @@ var socket = io(); //initialise/create connection
         //     createdAt: 1234
         // });
 
-        socket.emit('createMessage', {
-            from: 'agu@gmail.com',
-            text: 'Agu created a new message'
-
-        });
+        // socket.emit('createMessage', {
+        //     from: 'agu@gmail.com',
+        //     text: 'Agu created a new message'
+        // });
     });
 
     socket.on('disconnect', function() {
