@@ -37,14 +37,35 @@ io.on('connection', (socket) => {
     // socket.on('createEmail', (newEmail) => {
     //     console.log('createEmail: ', newEmail);
     // });
+
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to the chat group',
+        createdAt: new Date().getTime()
+    });
+
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'A new user joined this group',
+        createdAt: new Date().getTime()
+    });
+    
+    //It is the client that create the "createMessage" that is listened here
     socket.on('createMessage', (message) => {
         // console.log('The message', newMsg);
-        //io.emit: sends to everyone
+        //io.emit: sends to everyone, including the creator
         io.emit('newMessage', {
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
         });
+        //this is send the massage message to every other socket but this one
+        // socket.broadcast.emit('newMessage', {
+        //         from: message.from,
+        //         text: message.text,
+        //         createdAt: new Date().getTime()
+        //     });
+
     });
 
     socket.on('disconnect', () => {
