@@ -23,6 +23,31 @@ var socket = io(); //initialise/create connection
 //     console.log('new email', email);
 // })
 
-socket.on('newMessage', function(newMsg){
-    console.log('new Message entered', newMsg);
+socket.on('newMessage', function(message){
+    console.log('new Message entered', message);
+    var li = $('<li></li>'); //used jquery to create an element
+    li.text(`${message.from}: ${message.text}`);
+    $('#messages').append(li);
 })
+
+// socket.emit('createMessage', {
+//     from: 'Frank',
+//     text: 'Hi'
+// }, function(data){
+//     console.log('Got it', data);
+// });
+
+$('#message-form').on('submit', function(e){
+
+    e.preventDefault();
+    // console.log('u clicked me');
+    socket.emit('createMessage', {
+        from: 'User',
+        text: $('[name=message]').val() //get the value
+    }, function(){
+
+    })
+    $('[name=message]').val('');
+
+    
+});

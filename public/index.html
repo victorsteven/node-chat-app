@@ -7,9 +7,17 @@
     <title>Socket IO</title>
 </head>
 <body>
-    <h1>Hello sir</h1>
+    <p>Hello sir</p>
+
+    <ol id="messages"></ol>
+
+    <form action="" id="message-form">
+        <input type="text" name="message" id="">
+        <button type="submit">Send</button>
+    </form>
 
     <script src="socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/js/index.js"></script>
 </body>
 </html>

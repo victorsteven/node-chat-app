@@ -44,10 +44,12 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'Someone just joined the group'));
     
     //It is the client that create the "createMessage" that is listened here
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         // console.log('The message', newMsg);
         //io.emit: sends to everyone, including the creator
+        console.log("createMessage", message);
         io.emit('newMessage', generateMessage(message.from, message.text));
+        callback('This is from the server');
         //this is send the massage message to every other socket but this one
         // socket.broadcast.emit('newMessage', {
         //         from: message.from,
