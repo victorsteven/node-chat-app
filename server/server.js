@@ -49,7 +49,8 @@ io.on('connection', (socket) => {
         //io.emit: sends to everyone, including the creator
         console.log("createMessage", message);
         io.emit('newMessage', generateMessage(message.from, message.text));
-        callback('This is from the server');
+        // callback('This is from the server');
+        callback();
         //this is send the massage message to every other socket but this one
         // socket.broadcast.emit('newMessage', {
         //         from: message.from,
