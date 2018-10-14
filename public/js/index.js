@@ -24,9 +24,10 @@ var socket = io(); //initialise/create connection
 // })
 
 socket.on('newMessage', function(message){
+    let formattedTime = moment(message.createdAt).format('h:mm a');
     console.log('new Message entered', message);
     var li = $('<li></li>'); //used jquery to create an element
-    li.text(`${message.from}: ${message.text}`);
+    li.text(`${message.from}: ${message.text} at ${formattedTime}`);
     $('#messages').append(li);
 })
 
@@ -37,12 +38,14 @@ socket.on('newMessage', function(message){
 //     console.log('Got it', data);
 // });
 socket.on('newLocationMessage', function(message){
+    let formattedTime = moment(message.createdAt).format('h:mm a');
     var li = $('<li></li>');
     var a = $('<a target="_blank">My current location</a>');
 
     li.text(`${message.from}: `);
     a.attr('href', message.url);
     li.append(a);
+    li.append(" " + formattedTime);
     $('#messages').append(li);
 })
 
@@ -66,7 +69,7 @@ locationButton.on('click', function(){
     // if(!navigator.geolocation){
     //     return alert('Geolation not supported by ur browser')
     // }
-    locationButton.attr('disabled', 'disabled').text('Sending location...');
+    locationButton.attr('disabled', 'disabled').html('Sending location <i class="fa fa-spinner fa-spin"></>');
 
     navigator.geolocation.getCurrentPosition(function(position){
         locationButton.removeAttr('disabled').text('Send location');
