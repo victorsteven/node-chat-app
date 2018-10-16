@@ -116,7 +116,6 @@ $('#message-form').on('submit', function(e){
     e.preventDefault();
     // console.log('u clicked me');
     socket.emit('createMessage', {
-        from: 'User',
         text: messageTextbox.val() //get the value
     }, function(){
         messageTextbox.val(''); //set the value to an empty string

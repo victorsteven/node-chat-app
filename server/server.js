@@ -69,7 +69,10 @@ socket.on('join', (params, callback) => {
         // console.log('The message', newMsg);
         //io.emit: sends to everyone, including the creator
         console.log("createMessage", message);
-        io.emit('newMessage', generateMessage(message.from, message.text));
+        var user = users.getUser(socket.id);
+        if(user && message.text){
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+        }
         // callback('This is from the server');
         callback();
         //this is send the massage message to every other socket but this one
@@ -82,7 +85,10 @@ socket.on('join', (params, callback) => {
     });
 
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        var user = users.getUser(socket.id);
+        if(user){
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
     });
 
     socket.on('disconnect', () => {
