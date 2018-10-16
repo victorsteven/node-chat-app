@@ -4,6 +4,8 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
 //__dirname is the server folder
 
@@ -16,6 +18,7 @@ const port = process.env.PORT || 3000
 
 var server = http.createServer(app);
 var io = socketIO(server);
+var users = new Users();
 
 // console.log(publicPath);
 app.use(express.static(publicPath));
@@ -39,9 +42,27 @@ io.on('connection', (socket) => {
     //     console.log('createEmail: ', newEmail);
     // });
 
+    
+
+socket.on('join', (params, callback) => {
+        if(!isRealString(params.name) || !isRealString(params.room)){
+            return callback("Name and room are required");
+        }
+
+    //the user join a room, then we remove them from any room joined before, then we add them to the new room
+    socket.join(params.room); //join a room by the string given
+    users.removeUser(socket.id);
+    users.addUser(socket.id, params.name, params.room);
+
+    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+
+    //emit to specific user
     socket.emit('newMessage', generateMessage('Admin', 'welcome to the chat app'));
 
-    socket.broadcast.emit('newMessage', generateMessage('Admin', 'Someone just joined the group'));
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} just joined`));
+
+    callback();
+});
     
     //It is the client that create the "createMessage" that is listened here
     socket.on('createMessage', (message, callback) => {
@@ -66,7 +87,14 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('user was disconnected');
-    })
+        var user = users.removeUser(socket.id);
+
+        if(user){
+        io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+        io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} left`));
+        }
+
+    });
 
 }); 
 server.listen(port, () => {

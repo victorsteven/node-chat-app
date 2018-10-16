@@ -20,6 +20,16 @@ function scrollToButton(){
     socket.on('connect', function() { //listen to connection
         console.log('Connected to server');
 
+        var params = $.deparam(window.location.search);
+        socket.emit('join', params, function(err) {
+            if(err){
+                alert(err);
+                window.location.href = '/';
+            }else{
+                console.log("No error")
+            };
+        });
+
         // socket.emit('createEmail', {
         //     to: 'jane@example.com',
         //     text: 'Hey this is victor',
@@ -32,8 +42,19 @@ function scrollToButton(){
         // });
     });
 
-    socket.on('disconnect', function() {
-        console.log('disconnected from server')
+socket.on('disconnect', function() {
+    console.log('disconnected from server')
+});
+
+
+socket.on('updateUserList', function(users){
+    // console.log("Users list", users);
+    var ol = $('<ol></ol>');
+    users.forEach(function(user){
+        ol.append($('<li></li>').text(user));
+    });
+    //We are appending to the list, we are getting the latest list
+    $('#users').html(ol);
 });
 
 // socket.on('newEmail', function(email){
